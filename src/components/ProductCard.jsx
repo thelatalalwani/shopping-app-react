@@ -1,16 +1,21 @@
 function ProductCard({ product }) {
+  function handleViewDetails() {
+    alert(product.id);
+  }
+
   return (
     <div
       style={{
-        border: "1px solid #ccc",
-        margin: "10px",
+        border: "1px solid gray",
         padding: "10px",
+        margin: "10px",
       }}
     >
       <h3>{product.name}</h3>
       <p>{product.description}</p>
       <p>₹ {product.price}</p>
       <p>Stock : {product.stock}</p>
+      <button onClick={handleViewDetails}>View Details</button>
     </div>
   );
 }
