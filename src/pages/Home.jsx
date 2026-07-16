@@ -31,6 +31,10 @@ function Home() {
     return <h2>{error}</h2>;
   }
 
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchText.toLowerCase()),
+  );
+
   return (
     <div>
       <h1>Shopping App</h1>
@@ -42,13 +46,13 @@ function Home() {
         onChange={(e) => setSearchText(e.target.value)}
       />
 
-      {products
-        .filter((product) =>
-          product.name.toLowerCase().includes(searchText.toLowerCase()),
-        )
-        .map((product) => (
+      {filteredProducts.length === 0 ? (
+        <p>No products found.</p>
+      ) : (
+        filteredProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
-        ))}
+        ))
+      )}
     </div>
   );
 }
