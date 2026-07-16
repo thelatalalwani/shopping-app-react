@@ -6,6 +6,7 @@ function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     loadProducts();
@@ -34,9 +35,20 @@ function Home() {
     <div>
       <h1>Shopping App</h1>
 
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
+      <input
+        type="text"
+        placeholder="Search products..."
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+      />
+
+      {products
+        .filter((product) =>
+          product.name.toLowerCase().includes(searchText.toLowerCase()),
+        )
+        .map((product) => (
+          <ProductCard key={product.id} product={product} />
+        ))}
     </div>
   );
 }
