@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import ProductCard from "../components/ProductCard";
 import { getProducts } from "../services/productService";
 
 function Home() {
@@ -23,19 +24,7 @@ function Home() {
       <h1>Shopping App</h1>
 
       {products.map((product) => (
-        <div
-          key={product.id}
-          style={{
-            border: "1px solid #ccc",
-            margin: "10px",
-            padding: "10px",
-          }}
-        >
-          <h3>{product.name}</h3>
-          <p>{product.description}</p>
-          <p>₹ {product.price}</p>
-          <p>Stock : {product.stock}</p>
-        </div>
+        <ProductCard key={product.id} product={product} />
       ))}
     </div>
   );
