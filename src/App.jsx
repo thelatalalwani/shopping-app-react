@@ -8,21 +8,36 @@ function App() {
 
   function handleAddToCart(product) {
     setCartItems((previousItems) => {
-      const existingProduct = previousItems.find(
-        (item) => item.id === product.id,
+      const existingItem = previousItems.find(
+        (item) => item.product.id === product.id,
       );
 
-      if (existingProduct) {
-        return previousItems;
+      if (existingItem) {
+        return previousItems.map((item) =>
+          item.product.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
+        );
       }
 
-      return [...previousItems, product];
+      return [
+        ...previousItems,
+        {
+          product: product,
+          quantity: 1,
+        },
+      ];
     });
   }
 
+  const totalCartItems = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0,
+  );
+
   return (
     <>
-      <h2>Cart: {cartItems.length}</h2>
+      <h2>Cart: {totalCartItems}</h2>
 
       <Routes>
         <Route path="/" element={<Home onAddToCart={handleAddToCart} />} />
