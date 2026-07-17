@@ -7,7 +7,17 @@ function App() {
   const [cartItems, setCartItems] = useState([]);
 
   function handleAddToCart(product) {
-    setCartItems((previousItems) => [...previousItems, product]);
+    setCartItems((previousItems) => {
+      const existingProduct = previousItems.find(
+        (item) => item.id === product.id,
+      );
+
+      if (existingProduct) {
+        return previousItems;
+      }
+
+      return [...previousItems, product];
+    });
   }
 
   return (
