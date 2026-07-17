@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import ProductDetails from "./pages/ProductDetails";
+import Cart from "./pages/Cart";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -37,12 +38,16 @@ function App() {
 
   return (
     <>
-      <h2>Cart: {totalCartItems}</h2>
+      <h2>
+        <Link to="/cart">Cart: {totalCartItems}</Link>
+      </h2>
 
       <Routes>
         <Route path="/" element={<Home onAddToCart={handleAddToCart} />} />
 
         <Route path="/products/:id" element={<ProductDetails />} />
+
+        <Route path="/cart" element={<Cart />} />
       </Routes>
     </>
   );
