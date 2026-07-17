@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { getProducts } from "../services/productService";
 
-function Home() {
+function Home({ onAddToCart }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -50,7 +50,11 @@ function Home() {
         <p>No products found.</p>
       ) : (
         filteredProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard
+            key={product.id}
+            product={product}
+            onAddToCart={onAddToCart}
+          />
         ))
       )}
     </div>
