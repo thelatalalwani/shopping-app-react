@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getProductById } from "../services/productService";
 
 function ProductDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,6 +35,8 @@ function ProductDetails() {
 
   return (
     <div>
+      <button onClick={() => navigate("/")}>Back</button>
+
       <h1>{product.name}</h1>
       <p>{product.description}</p>
       <p>₹ {product.price}</p>
