@@ -4,6 +4,11 @@ function Cart({
   onDecreaseQuantity,
   onRemoveItem,
 }) {
+  const grandTotal = cartItems.reduce(
+    (total, item) => total + item.product.price * item.quantity,
+    0,
+  );
+
   return (
     <div>
       <h1>Shopping Cart</h1>
@@ -32,6 +37,10 @@ function Cart({
           <p>Subtotal: ₹{item.product.price * item.quantity}</p>
         </div>
       ))}
+
+      <hr />
+
+      <h2>Grand Total: ₹{grandTotal}</h2>
     </div>
   );
 }
