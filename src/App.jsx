@@ -42,13 +42,23 @@ function App() {
   }
 
   function handleDecreaseQuantity(productId) {
-    setCartItems((previousItems) =>
-      previousItems.map((item) =>
+    setCartItems((previousItems) => {
+      const selectedItem = previousItems.find(
+        (item) => item.product.id === productId,
+      );
+
+      if (selectedItem.quantity === 1) {
+        return previousItems.filter(
+          (item) => item.product.id !== productId,
+        );
+      }
+
+      return previousItems.map((item) =>
         item.product.id === productId
           ? { ...item, quantity: item.quantity - 1 }
           : item,
-      ),
-    );
+      );
+    });
   }
 
   const totalCartItems = cartItems.reduce(
