@@ -1,8 +1,10 @@
 import { useState } from "react";
 
 function Checkout() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [customer, setCustomer] = useState({
+    name: "",
+    email: "",
+  });
 
   return (
     <div>
@@ -15,8 +17,13 @@ function Checkout() {
 
         <input
           type="text"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
+          value={customer.name}
+          onChange={(event) =>
+            setCustomer({
+              ...customer,
+              name: event.target.value,
+            })
+          }
         />
       </div>
 
@@ -27,8 +34,13 @@ function Checkout() {
 
         <input
           type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          value={customer.email}
+          onChange={(event) =>
+            setCustomer({
+              ...customer,
+              email: event.target.value,
+            })
+          }
         />
       </div>
     </div>
