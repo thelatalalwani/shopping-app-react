@@ -10,6 +10,7 @@ function Checkout() {
     state: "",
     pincode: "",
   });
+  const [errors, setErrors] = useState({});
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -18,6 +19,26 @@ function Checkout() {
       ...previousCustomer,
       [name]: value,
     }));
+  }
+
+  function handleSubmit() {
+    const validationErrors = {};
+
+    if (customer.name.trim() === "") {
+      validationErrors.name = "Name is required.";
+    }
+
+    if (customer.email.trim() === "") {
+      validationErrors.email = "Email is required.";
+    }
+
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
+
+    alert("Validation Passed");
   }
 
   return (
@@ -35,6 +56,8 @@ function Checkout() {
           value={customer.name}
           onChange={handleChange}
         />
+
+        {errors.name && <p style={{ color: "red" }}>{errors.name}</p>}
       </div>
 
       <div>
@@ -48,6 +71,8 @@ function Checkout() {
           value={customer.email}
           onChange={handleChange}
         />
+
+        {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
       </div>
 
       <div>
@@ -113,6 +138,8 @@ function Checkout() {
           onChange={handleChange}
         />
       </div>
+
+      <button onClick={handleSubmit}>Place Order</button>
     </div>
   );
 }
