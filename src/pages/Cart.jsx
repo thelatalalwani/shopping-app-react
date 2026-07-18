@@ -1,9 +1,13 @@
+import { useNavigate } from "react-router-dom";
+
 function Cart({
   cartItems,
   onIncreaseQuantity,
   onDecreaseQuantity,
   onRemoveItem,
 }) {
+  const navigate = useNavigate();
+
   const grandTotal = cartItems.reduce(
     (total, item) => total + item.product.price * item.quantity,
     0,
@@ -41,6 +45,8 @@ function Cart({
       <hr />
 
       <h2>Grand Total: ₹{grandTotal}</h2>
+
+      <button onClick={() => navigate("/checkout")}>Checkout</button>
     </div>
   );
 }

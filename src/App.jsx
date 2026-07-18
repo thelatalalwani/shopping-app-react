@@ -3,6 +3,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -94,6 +95,8 @@ function App() {
             />
           }
         />
+
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </>
   );
