@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import CartContext from "../context/CartContext";
 import { placeOrder } from "../services/orderService";
 
-function Checkout({ cartItems }) {
+function Checkout() {
   const [customer, setCustomer] = useState({
     name: "",
     email: "",
@@ -12,6 +13,7 @@ function Checkout({ cartItems }) {
     pincode: "",
   });
   const [errors, setErrors] = useState({});
+  const { cartItems } = useContext(CartContext);
 
   function handleChange(event) {
     const { name, value } = event.target;

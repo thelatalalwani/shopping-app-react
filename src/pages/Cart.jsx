@@ -1,12 +1,15 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import CartContext from "../context/CartContext";
 
-function Cart({
-  cartItems,
-  onIncreaseQuantity,
-  onDecreaseQuantity,
-  onRemoveItem,
-}) {
+function Cart() {
   const navigate = useNavigate();
+  const {
+    cartItems,
+    handleIncreaseQuantity,
+    handleDecreaseQuantity,
+    handleRemoveItem,
+  } = useContext(CartContext);
 
   const grandTotal = cartItems.reduce(
     (total, item) => total + item.product.price * item.quantity,
@@ -30,13 +33,13 @@ function Cart({
 
           <p>Price: ₹{item.product.price}</p>
 
-          <button onClick={() => onDecreaseQuantity(item.product.id)}>-</button>
+          <button onClick={() => handleDecreaseQuantity(item.product.id)}>-</button>
 
           <span style={{ margin: "0 10px" }}>{item.quantity}</span>
 
-          <button onClick={() => onIncreaseQuantity(item.product.id)}>+</button>
+          <button onClick={() => handleIncreaseQuantity(item.product.id)}>+</button>
 
-          <button onClick={() => onRemoveItem(item.product.id)}>Remove</button>
+          <button onClick={() => handleRemoveItem(item.product.id)}>Remove</button>
 
           <p>Subtotal: ₹{item.product.price * item.quantity}</p>
         </div>

@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ProductCard from "../components/product/ProductCard";
+import CartContext from "../context/CartContext";
 import { getProducts } from "../services/productService";
 
-function Home({ onAddToCart }) {
+function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchText, setSearchText] = useState("");
+  const { handleAddToCart } = useContext(CartContext);
 
   useEffect(() => {
     loadProducts();
@@ -53,7 +55,7 @@ function Home({ onAddToCart }) {
           <ProductCard
             key={product.id}
             product={product}
-            onAddToCart={onAddToCart}
+            onAddToCart={handleAddToCart}
           />
         ))
       )}
