@@ -1,4 +1,4 @@
-function Cart({ cartItems }) {
+function Cart({ cartItems, onIncreaseQuantity, onDecreaseQuantity }) {
   return (
     <div>
       <h1>Shopping Cart</h1>
@@ -16,7 +16,11 @@ function Cart({ cartItems }) {
 
           <p>Price: ₹{item.product.price}</p>
 
-          <p>Quantity: {item.quantity}</p>
+          <button onClick={() => onDecreaseQuantity(item.product.id)}>-</button>
+
+          <span style={{ margin: "0 10px" }}>{item.quantity}</span>
+
+          <button onClick={() => onIncreaseQuantity(item.product.id)}>+</button>
 
           <p>Subtotal: ₹{item.product.price * item.quantity}</p>
         </div>

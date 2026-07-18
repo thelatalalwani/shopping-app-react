@@ -31,6 +31,26 @@ function App() {
     });
   }
 
+  function handleIncreaseQuantity(productId) {
+    setCartItems((previousItems) =>
+      previousItems.map((item) =>
+        item.product.id === productId
+          ? { ...item, quantity: item.quantity + 1 }
+          : item,
+      ),
+    );
+  }
+
+  function handleDecreaseQuantity(productId) {
+    setCartItems((previousItems) =>
+      previousItems.map((item) =>
+        item.product.id === productId
+          ? { ...item, quantity: item.quantity - 1 }
+          : item,
+      ),
+    );
+  }
+
   const totalCartItems = cartItems.reduce(
     (total, item) => total + item.quantity,
     0,
@@ -47,7 +67,16 @@ function App() {
 
         <Route path="/products/:id" element={<ProductDetails />} />
 
-        <Route path="/cart" element={<Cart cartItems={cartItems} />} />
+        <Route
+          path="/cart"
+          element={
+            <Cart
+              cartItems={cartItems}
+              onIncreaseQuantity={handleIncreaseQuantity}
+              onDecreaseQuantity={handleDecreaseQuantity}
+            />
+          }
+        />
       </Routes>
     </>
   );
