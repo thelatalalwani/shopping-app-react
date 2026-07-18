@@ -6,6 +6,15 @@ function Checkout() {
     email: "",
   });
 
+  function handleChange(event) {
+    const { name, value } = event.target;
+
+    setCustomer((previousCustomer) => ({
+      ...previousCustomer,
+      [name]: value,
+    }));
+  }
+
   return (
     <div>
       <h1>Checkout</h1>
@@ -17,13 +26,9 @@ function Checkout() {
 
         <input
           type="text"
+          name="name"
           value={customer.name}
-          onChange={(event) =>
-            setCustomer({
-              ...customer,
-              name: event.target.value,
-            })
-          }
+          onChange={handleChange}
         />
       </div>
 
@@ -34,13 +39,9 @@ function Checkout() {
 
         <input
           type="email"
+          name="email"
           value={customer.email}
-          onChange={(event) =>
-            setCustomer({
-              ...customer,
-              email: event.target.value,
-            })
-          }
+          onChange={handleChange}
         />
       </div>
     </div>
