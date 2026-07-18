@@ -61,6 +61,12 @@ function App() {
     });
   }
 
+  function handleRemoveItem(productId) {
+    setCartItems((previousItems) =>
+      previousItems.filter((item) => item.product.id !== productId),
+    );
+  }
+
   const totalCartItems = cartItems.reduce(
     (total, item) => total + item.quantity,
     0,
@@ -84,6 +90,7 @@ function App() {
               cartItems={cartItems}
               onIncreaseQuantity={handleIncreaseQuantity}
               onDecreaseQuantity={handleDecreaseQuantity}
+              onRemoveItem={handleRemoveItem}
             />
           }
         />

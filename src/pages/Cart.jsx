@@ -1,4 +1,9 @@
-function Cart({ cartItems, onIncreaseQuantity, onDecreaseQuantity }) {
+function Cart({
+  cartItems,
+  onIncreaseQuantity,
+  onDecreaseQuantity,
+  onRemoveItem,
+}) {
   return (
     <div>
       <h1>Shopping Cart</h1>
@@ -21,6 +26,8 @@ function Cart({ cartItems, onIncreaseQuantity, onDecreaseQuantity }) {
           <span style={{ margin: "0 10px" }}>{item.quantity}</span>
 
           <button onClick={() => onIncreaseQuantity(item.product.id)}>+</button>
+
+          <button onClick={() => onRemoveItem(item.product.id)}>Remove</button>
 
           <p>Subtotal: ₹{item.product.price * item.quantity}</p>
         </div>
