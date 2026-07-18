@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { placeOrder } from "../services/productService";
 
-function Checkout() {
+function Checkout({ cartItems }) {
   const [customer, setCustomer] = useState({
     name: "",
     email: "",
@@ -21,7 +22,7 @@ function Checkout() {
     }));
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     const validationErrors = {};
 
     if (customer.name.trim() === "") {
@@ -38,7 +39,30 @@ function Checkout() {
       return;
     }
 
-    alert("Validation Passed");
+    const order = {
+      customerName: customer.name,
+      email: customer.email,
+      phone: customer.phone,
+      address: customer.address,
+      city: customer.city,
+      state: customer.state,
+      pincode: customer.pincode,
+
+      grandTotal: cartItems.reduce(
+        (total, item) => total + item.product.price * item.quantity,
+        0,
+      ),
+
+      items: cartItems.map((item) => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+        price: item.product.price,
+      })),
+    };
+
+    await placeOrder(order);
+
+    alert("Order Placed Successfully!");
   }
 
   return (
