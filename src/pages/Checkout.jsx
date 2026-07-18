@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { placeOrder } from "../services/productService";
+import { placeOrder } from "../services/orderService";
 
 function Checkout({ cartItems }) {
   const [customer, setCustomer] = useState({

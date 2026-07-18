@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import Layout from "./components/layout/Layout";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -74,7 +75,7 @@ function App() {
   );
 
   return (
-    <>
+    <Layout>
       <h2>
         <Link to="/cart">Cart: {totalCartItems}</Link>
       </h2>
@@ -101,7 +102,7 @@ function App() {
           element={<Checkout cartItems={cartItems} />}
         />
       </Routes>
-    </>
+    </Layout>
   );
 }
 
