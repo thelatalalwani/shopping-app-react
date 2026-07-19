@@ -1,6 +1,5 @@
-import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import CartContext from "../context/CartContext";
+import useCart from "../hooks/useCart";
 
 function Cart() {
   const navigate = useNavigate();
@@ -9,7 +8,7 @@ function Cart() {
     handleIncreaseQuantity,
     handleDecreaseQuantity,
     handleRemoveItem,
-  } = useContext(CartContext);
+  } = useCart();
 
   const grandTotal = cartItems.reduce(
     (total, item) => total + item.product.price * item.quantity,

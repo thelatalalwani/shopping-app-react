@@ -1,9 +1,8 @@
-import { useContext } from "react";
 import { Link } from "react-router-dom";
-import CartContext from "../../context/CartContext";
+import useCart from "../../hooks/useCart";
 
 function Header() {
-  const { cartItems } = useContext(CartContext);
+  const { cartItems } = useCart();
 
   const cartCount = cartItems.reduce(
     (total, item) => total + item.quantity,

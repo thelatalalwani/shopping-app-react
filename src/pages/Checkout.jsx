@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import CartContext from "../context/CartContext";
+import { useState } from "react";
+import useCart from "../hooks/useCart";
 import { placeOrder } from "../services/orderService";
 
 function Checkout() {
@@ -13,7 +13,7 @@ function Checkout() {
     pincode: "",
   });
   const [errors, setErrors] = useState({});
-  const { cartItems } = useContext(CartContext);
+  const { cartItems } = useCart();
 
   function handleChange(event) {
     const { name, value } = event.target;

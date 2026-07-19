@@ -1,10 +1,10 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import ProductCard from "../components/product/ProductCard";
-import CartContext from "../context/CartContext";
+import useCart from "../hooks/useCart";
 import useProducts from "../hooks/useProducts";
 
 function Home() {
-    const { handleAddToCart } = useContext(CartContext);
+    const { handleAddToCart } = useCart();
     const { products, loading, error } = useProducts();
 
     const [searchText, setSearchText] = useState("");
