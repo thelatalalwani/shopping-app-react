@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:5220/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 async function request(endpoint, options = {}) {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -17,17 +17,13 @@ async function request(endpoint, options = {}) {
     return null;
   }
 
-  const text = await response.text();
+  const contentType = response.headers.get("content-type");
 
-  if (!text) {
+  if (!contentType?.includes("application/json")) {
     return null;
   }
 
-  try {
-    return JSON.parse(text);
-  } catch {
-    return text;
-  }
+  return response.json();
 }
 
 const apiClient = {
