@@ -1,13 +1,5 @@
-export async function placeOrder(order) {
-  const response = await fetch("http://localhost:5220/api/Orders", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(order),
-  });
+import apiClient from "./apiClient";
 
-  if (!response.ok) {
-    throw new Error("Failed to place order.");
-  }
+export function placeOrder(order) {
+  return apiClient.post("/Orders", order);
 }

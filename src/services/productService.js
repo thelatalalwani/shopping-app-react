@@ -1,21 +1,9 @@
-const API_URL = "http://localhost:5220/api/Products";
+import apiClient from "./apiClient";
 
-export async function getProducts() {
-  const response = await fetch(API_URL);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch products");
-  }
-
-  return response.json();
+export function getProducts() {
+  return apiClient.get("/Products");
 }
 
-export async function getProductById(id) {
-  const response = await fetch(`${API_URL}/${id}`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch product");
-  }
-
-  return response.json();
+export function getProductById(id) {
+  return apiClient.get(`/Products/${id}`);
 }
