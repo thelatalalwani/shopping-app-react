@@ -1,66 +1,52 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import ProductCard from "../components/product/ProductCard";
 import CartContext from "../context/CartContext";
-import { getProducts } from "../services/productService";
+import useProducts from "../hooks/useProducts";
 
 function Home() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [searchText, setSearchText] = useState("");
-  const { handleAddToCart } = useContext(CartContext);
+    const { handleAddToCart } = useContext(CartContext);
+    const { products, loading, error } = useProducts();
 
-  useEffect(() => {
-    loadProducts();
-  }, []);
+    const [searchText, setSearchText] = useState("");
 
-  async function loadProducts() {
-    try {
-      const data = await getProducts();
-      setProducts(data);
-    } catch {
-      setError("Unable to load products.");
-    } finally {
-      setLoading(false);
+    const filteredProducts = products.filter((product) =>
+        product.name
+            .toLowerCase()
+            .includes(searchText.toLowerCase())
+    );
+
+    if (loading) {
+        return <p>Loading products...</p>;
     }
-  }
 
-  if (loading) {
-    return <h2>Loading products...</h2>;
-  }
+    if (error) {
+        return <p>{error}</p>;
+    }
 
-  if (error) {
-    return <h2>{error}</h2>;
-  }
+    return (
+        <div>
+            <h1>Products</h1>
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchText.toLowerCase()),
-  );
+            <input
+                type="text"
+                placeholder="Search products"
+                value={searchText}
+                onChange={(event) =>
+                    setSearchText(event.target.value)
+                }
+            />
 
-  return (
-    <div>
-      <h1>Shopping App</h1>
-
-      <input
-        type="text"
-        placeholder="Search products..."
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-      />
-
-      {filteredProducts.length === 0 ? (
-        <p>No products found.</p>
-      ) : (
-        filteredProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onAddToCart={handleAddToCart}
-          />
-        ))
-      )}
-    </div>
-  );
+            <div>
+                {filteredProducts.map((product) => (
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                        onAddToCart={handleAddToCart}
+                    />
+                ))}
+            </div>
+        </div>
+    );
 }
 
 export default Home;
