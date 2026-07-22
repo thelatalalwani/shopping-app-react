@@ -3,7 +3,10 @@ import Home from "./pages/Home";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Layout from "./components/layout/Layout";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
   return (
@@ -15,7 +18,18 @@ function App() {
 
         <Route path="/cart" element={<Cart />} />
 
-        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/login" element={<Login />} />
+
+        <Route path="/register" element={<Register />} />
+
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Layout>
   );

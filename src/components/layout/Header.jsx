@@ -1,13 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 import useCart from "../../hooks/useCart";
 
 function Header() {
   const { cartItems } = useCart();
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
   const cartCount = cartItems.reduce(
     (total, item) => total + item.quantity,
     0,
   );
+
+  function handleLogout() {
+    logout();
+    navigate("/");
+  }
 
   return (
     <header>
@@ -19,6 +27,24 @@ function Header() {
         {" | "}
 
         <Link to="/cart">Cart ({cartCount})</Link>
+
+        {isAuthenticated ? (
+          <>
+            {" | "}
+            <span>Hello, {user?.name}</span>
+            {" | "}
+            <button type="button" onClick={handleLogout}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            {" | "}
+            <Link to="/login">Login</Link>
+            {" | "}
+            <Link to="/register">Register</Link>
+          </>
+        )}
       </nav>
 
       <hr />
