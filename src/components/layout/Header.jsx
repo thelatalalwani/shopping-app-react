@@ -26,23 +26,48 @@ function Header() {
 
         {" | "}
 
-        <Link to="/cart">Cart ({cartCount})</Link>
+        <Link to="/cart">
+          Cart ({cartCount})
+        </Link>
 
         {isAuthenticated ? (
           <>
+            {user?.role === "Admin" && (
+              <>
+                {" | "}
+                <Link to="/admin">
+                  Admin
+                </Link>
+              </>
+            )}
+
             {" | "}
-            <span>Hello, {user?.name}</span>
+            <span>
+              Hello, {user?.name}
+            </span>
+
             {" | "}
-            <button type="button" onClick={handleLogout}>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+            >
               Logout
             </button>
           </>
         ) : (
           <>
             {" | "}
-            <Link to="/login">Login</Link>
+
+            <Link to="/login">
+              Login
+            </Link>
+
             {" | "}
-            <Link to="/register">Register</Link>
+
+            <Link to="/register">
+              Register
+            </Link>
           </>
         )}
       </nav>
