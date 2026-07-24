@@ -62,8 +62,14 @@ export function CartProvider({ children }) {
 
   function handleRemoveItem(productId) {
     setCartItems((previousItems) =>
-      previousItems.filter((item) => item.product.id !== productId),
+      previousItems.filter(
+        (item) => item.product.id !== productId,
+      ),
     );
+  }
+
+  function clearCart() {
+    setCartItems([]);
   }
 
   return (
@@ -74,6 +80,7 @@ export function CartProvider({ children }) {
         handleIncreaseQuantity,
         handleDecreaseQuantity,
         handleRemoveItem,
+        clearCart,
       }}
     >
       {children}

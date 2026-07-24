@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useCart from "../hooks/useCart";
 import { placeOrder } from "../services/orderService";
 
@@ -12,8 +13,13 @@ function Checkout() {
     state: "",
     pincode: "",
   });
+
   const [errors, setErrors] = useState({});
-  const { cartItems } = useCart();
+  const [apiError, setApiError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { cartItems, clearCart } = useCart();
+  const navigate = useNavigate();
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -24,7 +30,9 @@ function Checkout() {
     }));
   }
 
-  async function handleSubmit() {
+  async function handleSubmit(event) {
+    event.preventDefault();
+
     const validationErrors = {};
 
     if (customer.name.trim() === "") {
@@ -35,7 +43,33 @@ function Checkout() {
       validationErrors.email = "Email is required.";
     }
 
+    if (customer.phone.trim() === "") {
+      validationErrors.phone = "Phone number is required.";
+    }
+
+    if (customer.address.trim() === "") {
+      validationErrors.address = "Address is required.";
+    }
+
+    if (customer.city.trim() === "") {
+      validationErrors.city = "City is required.";
+    }
+
+    if (customer.state.trim() === "") {
+      validationErrors.state = "State is required.";
+    }
+
+    if (customer.pincode.trim() === "") {
+      validationErrors.pincode = "Pincode is required.";
+    }
+
+    if (cartItems.length === 0) {
+      validationErrors.cart =
+        "Your cart is empty. Add a product before placing an order.";
+    }
+
     setErrors(validationErrors);
+    setApiError("");
 
     if (Object.keys(validationErrors).length > 0) {
       return;
@@ -51,7 +85,8 @@ function Checkout() {
       pincode: customer.pincode,
 
       grandTotal: cartItems.reduce(
-        (total, item) => total + item.product.price * item.quantity,
+        (total, item) =>
+          total + item.product.price * item.quantity,
         0,
       ),
 
@@ -62,110 +97,188 @@ function Checkout() {
       })),
     };
 
-    await placeOrder(order);
+    try {
+      setIsSubmitting(true);
 
-    alert("Order Placed Successfully!");
+      await placeOrder(order);
+
+      clearCart();
+
+      alert("Order placed successfully!");
+
+      navigate("/");
+    } catch (error) {
+      setApiError(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
     <div>
       <h1>Checkout</h1>
 
-      <div>
-        <label>Name</label>
+      {apiError && (
+        <p style={{ color: "red" }}>
+          {apiError}
+        </p>
+      )}
 
-        <br />
+      {errors.cart && (
+        <p style={{ color: "red" }}>
+          {errors.cart}
+        </p>
+      )}
 
-        <input
-          type="text"
-          name="name"
-          value={customer.name}
-          onChange={handleChange}
-        />
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="name">Name</label>
 
-        {errors.name && <p style={{ color: "red" }}>{errors.name}</p>}
-      </div>
+          <br />
 
-      <div>
-        <label>Email</label>
+          <input
+            id="name"
+            type="text"
+            name="name"
+            value={customer.name}
+            onChange={handleChange}
+          />
 
-        <br />
+          {errors.name && (
+            <p style={{ color: "red" }}>
+              {errors.name}
+            </p>
+          )}
+        </div>
 
-        <input
-          type="email"
-          name="email"
-          value={customer.email}
-          onChange={handleChange}
-        />
+        <div>
+          <label htmlFor="email">Email</label>
 
-        {errors.email && <p style={{ color: "red" }}>{errors.email}</p>}
-      </div>
+          <br />
 
-      <div>
-        <label>Phone</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            value={customer.email}
+            onChange={handleChange}
+          />
 
-        <br />
+          {errors.email && (
+            <p style={{ color: "red" }}>
+              {errors.email}
+            </p>
+          )}
+        </div>
 
-        <input
-          type="text"
-          name="phone"
-          value={customer.phone}
-          onChange={handleChange}
-        />
-      </div>
+        <div>
+          <label htmlFor="phone">Phone</label>
 
-      <div>
-        <label>Address</label>
+          <br />
 
-        <br />
+          <input
+            id="phone"
+            type="text"
+            name="phone"
+            value={customer.phone}
+            onChange={handleChange}
+          />
 
-        <textarea
-          name="address"
-          value={customer.address}
-          onChange={handleChange}
-        />
-      </div>
+          {errors.phone && (
+            <p style={{ color: "red" }}>
+              {errors.phone}
+            </p>
+          )}
+        </div>
 
-      <div>
-        <label>City</label>
+        <div>
+          <label htmlFor="address">Address</label>
 
-        <br />
+          <br />
 
-        <input
-          type="text"
-          name="city"
-          value={customer.city}
-          onChange={handleChange}
-        />
-      </div>
+          <textarea
+            id="address"
+            name="address"
+            value={customer.address}
+            onChange={handleChange}
+          />
 
-      <div>
-        <label>State</label>
+          {errors.address && (
+            <p style={{ color: "red" }}>
+              {errors.address}
+            </p>
+          )}
+        </div>
 
-        <br />
+        <div>
+          <label htmlFor="city">City</label>
 
-        <input
-          type="text"
-          name="state"
-          value={customer.state}
-          onChange={handleChange}
-        />
-      </div>
+          <br />
 
-      <div>
-        <label>Pincode</label>
+          <input
+            id="city"
+            type="text"
+            name="city"
+            value={customer.city}
+            onChange={handleChange}
+          />
 
-        <br />
+          {errors.city && (
+            <p style={{ color: "red" }}>
+              {errors.city}
+            </p>
+          )}
+        </div>
 
-        <input
-          type="text"
-          name="pincode"
-          value={customer.pincode}
-          onChange={handleChange}
-        />
-      </div>
+        <div>
+          <label htmlFor="state">State</label>
 
-      <button onClick={handleSubmit}>Place Order</button>
+          <br />
+
+          <input
+            id="state"
+            type="text"
+            name="state"
+            value={customer.state}
+            onChange={handleChange}
+          />
+
+          {errors.state && (
+            <p style={{ color: "red" }}>
+              {errors.state}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="pincode">Pincode</label>
+
+          <br />
+
+          <input
+            id="pincode"
+            type="text"
+            name="pincode"
+            value={customer.pincode}
+            onChange={handleChange}
+          />
+
+          {errors.pincode && (
+            <p style={{ color: "red" }}>
+              {errors.pincode}
+            </p>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+        >
+          {isSubmitting
+            ? "Placing Order..."
+            : "Place Order"}
+        </button>
+      </form>
     </div>
   );
 }
