@@ -15,12 +15,13 @@ function EditProduct() {
   const navigate = useNavigate();
 
   const [product, setProduct] = useState({
-    name: "",
-    description: "",
-    price: "",
-    imageUrl: "",
-    stock: "",
-  });
+  name: "",
+  description: "",
+  category: "",
+  price: "",
+  imageUrl: "",
+  stock: "",
+});
 
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState("");
@@ -39,12 +40,13 @@ function EditProduct() {
       const data = await getProductById(id);
 
       setProduct({
-        name: data.name ?? "",
-        description: data.description ?? "",
-        price: data.price ?? "",
-        imageUrl: data.imageUrl ?? "",
-        stock: data.stock ?? "",
-      });
+  name: data.name ?? "",
+  description: data.description ?? "",
+  category: data.category ?? "",
+  price: data.price ?? "",
+  imageUrl: data.imageUrl ?? "",
+  stock: data.stock ?? "",
+});
     } catch (error) {
       setApiError(error.message);
     } finally {
@@ -100,15 +102,14 @@ function EditProduct() {
       return;
     }
 
-    const request = {
-      name: product.name.trim(),
-      description:
-        product.description.trim() || null,
-      price: Number(product.price),
-      imageUrl:
-        product.imageUrl.trim() || null,
-      stock: Number(product.stock),
-    };
+   const request = {
+  name: product.name.trim(),
+  description: product.description.trim() || null,
+  category: product.category.trim() || null,
+  price: Number(product.price),
+  imageUrl: product.imageUrl.trim() || null,
+  stock: Number(product.stock),
+};
 
     try {
       setIsSubmitting(true);
@@ -181,6 +182,22 @@ function EditProduct() {
             value={product.description}
             onChange={handleChange}
           />
+        </div>
+
+       <div>
+        <label htmlFor="category">
+            Category
+        </label>
+
+        <br />
+
+        <input
+            id="category"
+            name="category"
+            type="text"
+            value={product.category}
+            onChange={handleChange}
+        />
         </div>
 
         <div>

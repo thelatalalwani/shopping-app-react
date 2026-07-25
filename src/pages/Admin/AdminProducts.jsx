@@ -106,6 +106,7 @@ function AdminProducts() {
             <tr>
               <th>Image</th>
               <th>Name</th>
+              <th>Category</th>
               <th>Price</th>
               <th>Stock</th>
               <th>Actions</th>
@@ -128,6 +129,8 @@ function AdminProducts() {
                 </td>
 
                 <td>{product.name}</td>
+                
+                <td>{product.category || "Uncategorised"}</td>
 
                 <td>₹{product.price}</td>
 

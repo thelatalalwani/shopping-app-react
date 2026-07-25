@@ -4,12 +4,13 @@ import { createProduct } from "../../services/productService";
 
 function AddProduct() {
   const [product, setProduct] = useState({
-    name: "",
-    description: "",
-    price: "",
-    imageUrl: "",
-    stock: "",
-  });
+  name: "",
+  description: "",
+  category: "",
+  price: "",
+  imageUrl: "",
+  stock: "",
+});
 
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState("");
@@ -64,13 +65,12 @@ function AddProduct() {
       return;
     }
 
-    const request = {
+   const request = {
       name: product.name.trim(),
-      description:
-        product.description.trim() || null,
+      description: product.description.trim() || null,
+      category: product.category.trim() || null,
       price: Number(product.price),
-      imageUrl:
-        product.imageUrl.trim() || null,
+      imageUrl: product.imageUrl.trim() || null,
       stock: Number(product.stock),
     };
 
@@ -142,6 +142,22 @@ function AddProduct() {
             onChange={handleChange}
           />
         </div>
+
+        <div>
+  <label htmlFor="category">
+    Category
+  </label>
+
+  <br />
+
+  <input
+    id="category"
+    name="category"
+    type="text"
+    value={product.category}
+    onChange={handleChange}
+  />
+</div>
 
         <div>
           <label htmlFor="price">

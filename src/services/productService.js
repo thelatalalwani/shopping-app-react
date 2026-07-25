@@ -1,7 +1,19 @@
 import apiClient from "./apiClient";
 
-export function getProducts() {
-  return apiClient.get("/Products");
+export function getProducts(filters = {}) {
+  const query = new URLSearchParams();
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== "" && value !== null && value !== undefined) {
+      query.append(key, value);
+    }
+  });
+
+  const queryString = query.toString();
+
+  return apiClient.get(
+    `/Products${queryString ? `?${queryString}` : ""}`,
+  );
 }
 
 export function getProductById(id) {
