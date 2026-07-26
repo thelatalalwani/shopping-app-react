@@ -3,6 +3,13 @@ import { getProducts } from "../services/productService";
 
 function useProducts(filters) {
   const [products, setProducts] = useState([]);
+  const [pagination, setPagination] = useState({
+    pageNumber: 1,
+    pageSize: 5,
+    totalItems: 0,
+    totalPages: 0,
+  });
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -17,7 +24,14 @@ function useProducts(filters) {
 
       const data = await getProducts(filters);
 
-      setProducts(data);
+      setProducts(data.items);
+
+      setPagination({
+        pageNumber: data.pageNumber,
+        pageSize: data.pageSize,
+        totalItems: data.totalItems,
+        totalPages: data.totalPages,
+      });
     } catch (error) {
       setError(error.message);
     } finally {
@@ -27,6 +41,7 @@ function useProducts(filters) {
 
   return {
     products,
+    pagination,
     loading,
     error,
   };

@@ -12,6 +12,9 @@ function Home() {
   const [maxPrice, setMaxPrice] = useState("");
   const [sortValue, setSortValue] = useState("");
 
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+
   const filters = useMemo(() => {
     const [sortBy, sortDirection] =
       sortValue.split("-");
@@ -23,6 +26,8 @@ function Home() {
       maxPrice,
       sortBy,
       sortDirection,
+      pageNumber,
+      pageSize,
     };
   }, [
     search,
@@ -30,10 +35,30 @@ function Home() {
     minPrice,
     maxPrice,
     sortValue,
+    pageNumber,
+    pageSize,
   ]);
 
-  const { products, loading, error } =
-    useProducts(filters);
+  const {
+    products,
+    pagination,
+    loading,
+    error,
+  } = useProducts(filters);
+
+  function resetToFirstPage() {
+    setPageNumber(1);
+  }
+
+  function clearFilters() {
+    setSearch("");
+    setCategory("");
+    setMinPrice("");
+    setMaxPrice("");
+    setSortValue("");
+    setPageNumber(1);
+    setPageSize(5);
+  }
 
   return (
     <div>
@@ -43,16 +68,18 @@ function Home() {
         type="text"
         placeholder="Search products"
         value={search}
-        onChange={(event) =>
-          setSearch(event.target.value)
-        }
+        onChange={(event) => {
+          setSearch(event.target.value);
+          resetToFirstPage();
+        }}
       />
 
       <select
         value={category}
-        onChange={(event) =>
-          setCategory(event.target.value)
-        }
+        onChange={(event) => {
+          setCategory(event.target.value);
+          resetToFirstPage();
+        }}
       >
         <option value="">All Categories</option>
         <option value="Electronics">
@@ -71,9 +98,10 @@ function Home() {
         placeholder="Minimum price"
         min="0"
         value={minPrice}
-        onChange={(event) =>
-          setMinPrice(event.target.value)
-        }
+        onChange={(event) => {
+          setMinPrice(event.target.value);
+          resetToFirstPage();
+        }}
       />
 
       <input
@@ -81,41 +109,53 @@ function Home() {
         placeholder="Maximum price"
         min="0"
         value={maxPrice}
-        onChange={(event) =>
-          setMaxPrice(event.target.value)
-        }
+        onChange={(event) => {
+          setMaxPrice(event.target.value);
+          resetToFirstPage();
+        }}
       />
 
       <select
         value={sortValue}
-        onChange={(event) =>
-          setSortValue(event.target.value)
-        }
+        onChange={(event) => {
+          setSortValue(event.target.value);
+          resetToFirstPage();
+        }}
       >
         <option value="">Default sorting</option>
+
         <option value="price-asc">
           Price: Low to High
         </option>
+
         <option value="price-desc">
           Price: High to Low
         </option>
+
         <option value="name-asc">
           Name: A to Z
         </option>
+
         <option value="name-desc">
           Name: Z to A
         </option>
       </select>
 
+      <select
+        value={pageSize}
+        onChange={(event) => {
+          setPageSize(Number(event.target.value));
+          setPageNumber(1);
+        }}
+      >
+        <option value={5}>5 per page</option>
+        <option value={10}>10 per page</option>
+        <option value={20}>20 per page</option>
+      </select>
+
       <button
         type="button"
-        onClick={() => {
-          setSearch("");
-          setCategory("");
-          setMinPrice("");
-          setMaxPrice("");
-          setSortValue("");
-        }}
+        onClick={clearFilters}
       >
         Clear Filters
       </button>
@@ -135,15 +175,82 @@ function Home() {
         )}
 
       {!loading && !error && (
-        <div>
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onAddToCart={handleAddToCart}
-            />
-          ))}
-        </div>
+        <>
+          <div>
+            {products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={handleAddToCart}
+              />
+            ))}
+          </div>
+
+          {pagination.totalItems > 0 && (
+            <p>
+              Page {pagination.pageNumber} of{" "}
+              {pagination.totalPages} —{" "}
+              {pagination.totalItems} products
+            </p>
+          )}
+
+          {pagination.totalPages > 1 && (
+            <div>
+              <button
+                type="button"
+                disabled={
+                  pagination.pageNumber === 1
+                }
+                onClick={() =>
+                  setPageNumber(
+                    (previousPage) =>
+                      previousPage - 1,
+                  )
+                }
+              >
+                Previous
+              </button>
+
+              {Array.from(
+                {
+                  length:
+                    pagination.totalPages,
+                },
+                (_, index) => index + 1,
+              ).map((page) => (
+                <button
+                  key={page}
+                  type="button"
+                  disabled={
+                    page ===
+                    pagination.pageNumber
+                  }
+                  onClick={() =>
+                    setPageNumber(page)
+                  }
+                >
+                  {page}
+                </button>
+              ))}
+
+              <button
+                type="button"
+                disabled={
+                  pagination.pageNumber ===
+                  pagination.totalPages
+                }
+                onClick={() =>
+                  setPageNumber(
+                    (previousPage) =>
+                      previousPage + 1,
+                  )
+                }
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

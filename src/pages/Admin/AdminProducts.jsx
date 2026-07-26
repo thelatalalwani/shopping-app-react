@@ -24,7 +24,7 @@ function AdminProducts() {
 
       const data = await getProducts();
 
-      setProducts(data);
+      setProducts(data.items);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -129,7 +129,7 @@ function AdminProducts() {
                 </td>
 
                 <td>{product.name}</td>
-                
+
                 <td>{product.category || "Uncategorised"}</td>
 
                 <td>₹{product.price}</td>
