@@ -1,10 +1,26 @@
-import { useMemo, useState } from "react";
+import {
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import ProductCard from "../components/product/ProductCard";
 import useCart from "../hooks/useCart";
 import useProducts from "../hooks/useProducts";
 
 function Home() {
-  const { handleAddToCart } = useCart();
+
+  
+  const {
+  handleAddToCart:
+    addProductToCart,
+} = useCart();
+
+const handleAddToCart = useCallback(
+  (product) => {
+    addProductToCart(product);
+  },
+  [addProductToCart],
+);
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");

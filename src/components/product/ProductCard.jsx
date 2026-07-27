@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { getImageUrl } from "../../utils/imageUrl";
 
@@ -12,26 +13,22 @@ function ProductCard({
   }
 
   function handleAddToCart() {
-    if (onAddToCart) {
-      onAddToCart(product);
-    }
+    onAddToCart(product);
   }
 
   return (
     <div>
       {product.imageUrl ? (
         <img
-          src={getImageUrl(product.imageUrl)}
+          src={getImageUrl(
+            product.imageUrl,
+          )}
           alt={product.name}
           width="180"
           height="180"
           loading="lazy"
           style={{
             objectFit: "contain",
-          }}
-          onError={(event) => {
-            event.currentTarget.style.display =
-              "none";
           }}
         />
       ) : (
@@ -72,4 +69,4 @@ function ProductCard({
   );
 }
 
-export default ProductCard;
+export default memo(ProductCard);
