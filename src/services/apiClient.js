@@ -3,26 +3,43 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 async function request(endpoint, options = {}) {
   const token = localStorage.getItem("token");
 
+  const isFormData =
+    options.body instanceof FormData;
+
   const headers = {
-    "Content-Type": "application/json",
     ...options.headers,
   };
 
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
+  if (!isFormData) {
+    headers["Content-Type"] =
+      "application/json";
   }
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  if (token) {
+    headers.Authorization =
+      `Bearer ${token}`;
+  }
+
+  const response = await fetch(
+    `${API_BASE_URL}${endpoint}`,
+    {
+      ...options,
+      headers,
+    },
+  );
 
   let responseData = null;
 
-  const contentType = response.headers.get("content-type");
+  const contentType =
+    response.headers.get("content-type");
 
-  if (contentType?.includes("application/json")) {
-    responseData = await response.json();
+  if (
+    contentType?.includes(
+      "application/json",
+    )
+  ) {
+    responseData =
+      await response.json();
   }
 
   if (!response.ok) {
@@ -32,7 +49,8 @@ async function request(endpoint, options = {}) {
     }
 
     throw new Error(
-      responseData?.message || `Request failed with status ${response.status}`,
+      responseData?.message ||
+        `Request failed with status ${response.status}`,
     );
   }
 
@@ -48,14 +66,20 @@ function get(endpoint) {
 function post(endpoint, data) {
   return request(endpoint, {
     method: "POST",
-    body: JSON.stringify(data),
+    body:
+      data instanceof FormData
+        ? data
+        : JSON.stringify(data),
   });
 }
 
 function put(endpoint, data) {
   return request(endpoint, {
     method: "PUT",
-    body: JSON.stringify(data),
+    body:
+      data instanceof FormData
+        ? data
+        : JSON.stringify(data),
   });
 }
 

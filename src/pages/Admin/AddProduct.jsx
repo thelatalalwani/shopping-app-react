@@ -15,6 +15,7 @@ function AddProduct() {
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
 
   const navigate = useNavigate();
 
@@ -53,8 +54,8 @@ function AddProduct() {
     return validationErrors;
   }
 
-  async function handleSubmit(event) {
-    event.preventDefault();
+ async function handleSubmit(event) {
+  event.preventDefault();
 
     const validationErrors = validateProduct();
 
@@ -65,19 +66,48 @@ function AddProduct() {
       return;
     }
 
-   const request = {
-      name: product.name.trim(),
-      description: product.description.trim() || null,
-      category: product.category.trim() || null,
-      price: Number(product.price),
-      imageUrl: product.imageUrl.trim() || null,
-      stock: Number(product.stock),
-    };
+    const formData = new FormData();
+
+    formData.append("name", product.name.trim());
+
+    formData.append(
+      "description",
+      product.description.trim(),
+    );
+
+    formData.append(
+      "category",
+      product.category.trim(),
+    );
+
+    formData.append(
+      "price",
+      product.price,
+    );
+
+    formData.append(
+      "stock",
+      product.stock,
+    );
+
+    if (product.imageUrl.trim()) {
+      formData.append(
+        "imageUrl",
+        product.imageUrl.trim(),
+      );
+    }
+
+    if (imageFile) {
+      formData.append(
+        "imageFile",
+        imageFile,
+      );
+    }
 
     try {
       setIsSubmitting(true);
 
-      await createProduct(request);
+      await createProduct(formData);
 
       navigate("/admin/products", {
         replace: true,
@@ -214,6 +244,32 @@ function AddProduct() {
             />
           </div>
         )}
+
+        <div>
+  <label htmlFor="imageFile">
+    Upload Product Image
+  </label>
+
+  <br />
+
+  <input
+    id="imageFile"
+    name="imageFile"
+    type="file"
+    accept=".jpg,.jpeg,.png,.webp"
+    onChange={(event) => {
+      const selectedFile =
+        event.target.files?.[0] || null;
+
+      setImageFile(selectedFile);
+    }}
+  />
+
+  <p>
+    Allowed formats: JPG, JPEG, PNG and WEBP.
+    Maximum size: 5 MB.
+  </p>
+</div>
 
         <div>
           <label htmlFor="stock">

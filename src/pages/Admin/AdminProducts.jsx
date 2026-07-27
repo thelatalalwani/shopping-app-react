@@ -1,18 +1,36 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import { Link } from "react-router-dom";
+
 import {
   deleteProduct,
   getProducts,
 } from "../../services/productService";
 
+import { getImageUrl } from "../../utils/imageUrl";
+
 function AdminProducts() {
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [deletingProductId, setDeletingProductId] =
-    useState(null);
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] =
+  const [products, setProducts] =
+    useState([]);
+
+  const [isLoading, setIsLoading] =
+    useState(true);
+
+  const [
+    deletingProductId,
+    setDeletingProductId,
+  ] = useState(null);
+
+  const [error, setError] =
     useState("");
+
+  const [
+    successMessage,
+    setSuccessMessage,
+  ] = useState("");
 
   useEffect(() => {
     loadProducts();
@@ -20,9 +38,13 @@ function AdminProducts() {
 
   async function loadProducts() {
     try {
+      setIsLoading(true);
       setError("");
 
-      const data = await getProducts();
+      const data = await getProducts({
+        pageNumber: 1,
+        pageSize: 50,
+      });
 
       setProducts(data.items);
     } catch (error) {
@@ -33,9 +55,10 @@ function AdminProducts() {
   }
 
   async function handleDelete(product) {
-    const shouldDelete = window.confirm(
-      `Are you sure you want to delete "${product.name}"?`,
-    );
+    const shouldDelete =
+      window.confirm(
+        `Are you sure you want to delete "${product.name}"?`,
+      );
 
     if (!shouldDelete) {
       return;
@@ -48,11 +71,13 @@ function AdminProducts() {
 
       await deleteProduct(product.id);
 
-      setProducts((previousProducts) =>
-        previousProducts.filter(
-          (currentProduct) =>
-            currentProduct.id !== product.id,
-        ),
+      setProducts(
+        (previousProducts) =>
+          previousProducts.filter(
+            (currentProduct) =>
+              currentProduct.id !==
+              product.id,
+          ),
       );
 
       setSuccessMessage(
@@ -119,9 +144,21 @@ function AdminProducts() {
                 <td>
                   {product.imageUrl ? (
                     <img
-                      src={product.imageUrl}
+                      src={getImageUrl(
+                        product.imageUrl,
+                      )}
                       alt={product.name}
                       width="70"
+                      height="70"
+                      loading="lazy"
+                      style={{
+                        objectFit: "contain",
+                      }}
+                      onError={(event) => {
+                        event.currentTarget
+                          .style.display =
+                          "none";
+                      }}
                     />
                   ) : (
                     "No image"
@@ -130,7 +167,10 @@ function AdminProducts() {
 
                 <td>{product.name}</td>
 
-                <td>{product.category || "Uncategorised"}</td>
+                <td>
+                  {product.category ||
+                    "Not specified"}
+                </td>
 
                 <td>₹{product.price}</td>
 
@@ -151,10 +191,12 @@ function AdminProducts() {
                       handleDelete(product)
                     }
                     disabled={
-                      deletingProductId === product.id
+                      deletingProductId ===
+                      product.id
                     }
                   >
-                    {deletingProductId === product.id
+                    {deletingProductId ===
+                    product.id
                       ? "Deleting..."
                       : "Delete"}
                   </button>

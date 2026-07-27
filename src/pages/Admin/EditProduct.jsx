@@ -1,4 +1,9 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
 import {
   Link,
   useNavigate,
@@ -10,43 +15,75 @@ import {
   updateProduct,
 } from "../../services/productService";
 
+import { getImageUrl } from "../../utils/imageUrl";
+
 function EditProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const [product, setProduct] = useState({
-  name: "",
-  description: "",
-  category: "",
-  price: "",
-  imageUrl: "",
-  stock: "",
-});
+    name: "",
+    description: "",
+    category: "",
+    price: "",
+    imageUrl: "",
+    stock: "",
+  });
 
-  const [errors, setErrors] = useState({});
-  const [apiError, setApiError] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [imageFile, setImageFile] =
+    useState(null);
+
+  const [errors, setErrors] =
+    useState({});
+
+  const [apiError, setApiError] =
+    useState("");
+
+  const [isLoading, setIsLoading] =
+    useState(true);
+
   const [isSubmitting, setIsSubmitting] =
     useState(false);
+
+  const imagePreviewUrl = useMemo(() => {
+    if (!imageFile) {
+      return "";
+    }
+
+    return URL.createObjectURL(imageFile);
+  }, [imageFile]);
 
   useEffect(() => {
     loadProduct();
   }, [id]);
 
+  useEffect(() => {
+    return () => {
+      if (imagePreviewUrl) {
+        URL.revokeObjectURL(
+          imagePreviewUrl,
+        );
+      }
+    };
+  }, [imagePreviewUrl]);
+
   async function loadProduct() {
     try {
+      setIsLoading(true);
       setApiError("");
 
-      const data = await getProductById(id);
+      const data =
+        await getProductById(id);
 
       setProduct({
-  name: data.name ?? "",
-  description: data.description ?? "",
-  category: data.category ?? "",
-  price: data.price ?? "",
-  imageUrl: data.imageUrl ?? "",
-  stock: data.stock ?? "",
-});
+        name: data.name ?? "",
+        description:
+          data.description ?? "",
+        category: data.category ?? "",
+        price: data.price ?? "",
+        imageUrl: data.imageUrl ?? "",
+        stock: data.stock ?? "",
+      });
     } catch (error) {
       setApiError(error.message);
     } finally {
@@ -55,12 +92,23 @@ function EditProduct() {
   }
 
   function handleChange(event) {
-    const { name, value } = event.target;
+    const { name, value } =
+      event.target;
 
-    setProduct((previousProduct) => ({
-      ...previousProduct,
-      [name]: value,
-    }));
+    setProduct(
+      (previousProduct) => ({
+        ...previousProduct,
+        [name]: value,
+      }),
+    );
+  }
+
+  function handleImageChange(event) {
+    const selectedFile =
+      event.target.files?.[0] ||
+      null;
+
+    setImageFile(selectedFile);
   }
 
   function validateProduct() {
@@ -87,38 +135,91 @@ function EditProduct() {
         "Stock cannot be negative.";
     }
 
+    if (
+      imageFile &&
+      imageFile.size >
+        5 * 1024 * 1024
+    ) {
+      validationErrors.imageFile =
+        "Image size cannot exceed 5 MB.";
+    }
+
     return validationErrors;
   }
 
   async function handleSubmit(event) {
     event.preventDefault();
 
-    const validationErrors = validateProduct();
+    const validationErrors =
+      validateProduct();
 
     setErrors(validationErrors);
     setApiError("");
 
-    if (Object.keys(validationErrors).length > 0) {
+    if (
+      Object.keys(
+        validationErrors,
+      ).length > 0
+    ) {
       return;
     }
 
-   const request = {
-  name: product.name.trim(),
-  description: product.description.trim() || null,
-  category: product.category.trim() || null,
-  price: Number(product.price),
-  imageUrl: product.imageUrl.trim() || null,
-  stock: Number(product.stock),
-};
+    const formData =
+      new FormData();
+
+    formData.append(
+      "name",
+      product.name.trim(),
+    );
+
+    formData.append(
+      "description",
+      product.description.trim(),
+    );
+
+    formData.append(
+      "category",
+      product.category.trim(),
+    );
+
+    formData.append(
+      "price",
+      product.price,
+    );
+
+    formData.append(
+      "stock",
+      product.stock,
+    );
+
+    if (product.imageUrl?.trim()) {
+      formData.append(
+        "imageUrl",
+        product.imageUrl.trim(),
+      );
+    }
+
+    if (imageFile) {
+      formData.append(
+        "imageFile",
+        imageFile,
+      );
+    }
 
     try {
       setIsSubmitting(true);
 
-      await updateProduct(id, request);
+      await updateProduct(
+        id,
+        formData,
+      );
 
-      navigate("/admin/products", {
-        replace: true,
-      });
+      navigate(
+        "/admin/products",
+        {
+          replace: true,
+        },
+      );
     } catch (error) {
       setApiError(error.message);
     } finally {
@@ -127,7 +228,9 @@ function EditProduct() {
   }
 
   if (isLoading) {
-    return <p>Loading product...</p>;
+    return (
+      <p>Loading product...</p>
+    );
   }
 
   return (
@@ -163,7 +266,9 @@ function EditProduct() {
           />
 
           {errors.name && (
-            <p style={{ color: "red" }}>
+            <p
+              style={{ color: "red" }}
+            >
               {errors.name}
             </p>
           )}
@@ -179,25 +284,42 @@ function EditProduct() {
           <textarea
             id="description"
             name="description"
-            value={product.description}
+            value={
+              product.description
+            }
             onChange={handleChange}
           />
         </div>
 
-       <div>
-        <label htmlFor="category">
+        <div>
+          <label htmlFor="category">
             Category
-        </label>
+          </label>
 
-        <br />
+          <br />
 
-        <input
+          <select
             id="category"
             name="category"
-            type="text"
             value={product.category}
             onChange={handleChange}
-        />
+          >
+            <option value="">
+              Select Category
+            </option>
+
+            <option value="Electronics">
+              Electronics
+            </option>
+
+            <option value="Clothing">
+              Clothing
+            </option>
+
+            <option value="Books">
+              Books
+            </option>
+          </select>
         </div>
 
         <div>
@@ -218,7 +340,9 @@ function EditProduct() {
           />
 
           {errors.price && (
-            <p style={{ color: "red" }}>
+            <p
+              style={{ color: "red" }}
+            >
               {errors.price}
             </p>
           )}
@@ -234,24 +358,82 @@ function EditProduct() {
           <input
             id="imageUrl"
             name="imageUrl"
-            type="url"
+            type="text"
             value={product.imageUrl}
             onChange={handleChange}
-            placeholder="https://example.com/product.jpg"
+            placeholder="Optional image URL"
           />
         </div>
 
-        {product.imageUrl && (
+        <div>
+          <label htmlFor="imageFile">
+            Replace Product Image
+          </label>
+
+          <br />
+
+          <input
+            id="imageFile"
+            name="imageFile"
+            type="file"
+            accept=".jpg,.jpeg,.png,.webp"
+            onChange={
+              handleImageChange
+            }
+          />
+
+          <p>
+            Leave this empty to keep
+            the existing image.
+          </p>
+
+          {errors.imageFile && (
+            <p
+              style={{ color: "red" }}
+            >
+              {errors.imageFile}
+            </p>
+          )}
+        </div>
+
+        {product.imageUrl &&
+          !imageFile && (
+            <div>
+              <p>Current image:</p>
+
+              <img
+                src={getImageUrl(
+                  product.imageUrl,
+                )}
+                alt={product.name}
+                width="150"
+                height="150"
+                style={{
+                  objectFit:
+                    "contain",
+                }}
+                onError={(event) => {
+                  event.currentTarget
+                    .style.display =
+                    "none";
+                }}
+              />
+            </div>
+          )}
+
+        {imageFile && (
           <div>
-            <p>Image preview:</p>
+            <p>
+              New selected image:
+            </p>
 
             <img
-              key={product.imageUrl}
-              src={product.imageUrl}
-              alt={product.name || "Product preview"}
+              src={imagePreviewUrl}
+              alt="New product preview"
               width="150"
-              onError={(event) => {
-                event.currentTarget.style.display = "none";
+              height="150"
+              style={{
+                objectFit: "contain",
               }}
             />
           </div>
@@ -275,7 +457,9 @@ function EditProduct() {
           />
 
           {errors.stock && (
-            <p style={{ color: "red" }}>
+            <p
+              style={{ color: "red" }}
+            >
               {errors.stock}
             </p>
           )}
