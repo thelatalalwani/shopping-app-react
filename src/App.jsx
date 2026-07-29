@@ -36,10 +36,6 @@ const Checkout = lazy(
   () => import("./pages/Checkout"),
 );
 
-const Orders = lazy(
-  () => import("./pages/Orders"),
-);
-
 const AdminDashboard = lazy(
   () =>
     import(
@@ -109,15 +105,6 @@ function App() {
             element={
               <ProtectedRoute>
                 <Checkout />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/orders"
-            element={
-              <ProtectedRoute>
-                <Orders />
               </ProtectedRoute>
             }
           />
