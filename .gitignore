@@ -7,11 +7,15 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies and builds
 node_modules
 dist
 dist-ssr
-*.local
+
+# Environment files containing local/private values
 .env
+.env.local
+.env.*.local
 
 # Editor directories and files
 .vscode/*
@@ -23,4 +27,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Generated script output
 scripts/output

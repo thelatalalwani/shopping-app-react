@@ -1,6 +1,12 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL;
 
+if (!API_BASE_URL) {
+  throw new Error(
+    "VITE_API_BASE_URL is not configured.",
+  );
+}
+
 async function request(
   endpoint,
   options = {},
@@ -83,10 +89,12 @@ function post(
 ) {
   return request(endpoint, {
     method: "POST",
+
     body:
       data instanceof FormData
         ? data
         : JSON.stringify(data),
+
     ...options,
   });
 }
@@ -98,10 +106,12 @@ function put(
 ) {
   return request(endpoint, {
     method: "PUT",
+
     body:
       data instanceof FormData
         ? data
         : JSON.stringify(data),
+
     ...options,
   });
 }
