@@ -1,7 +1,12 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL;
 
-async function request(endpoint, options = {}) {
-  const token = localStorage.getItem("token");
+async function request(
+  endpoint,
+  options = {},
+) {
+  const token =
+    localStorage.getItem("token");
 
   const isFormData =
     options.body instanceof FormData;
@@ -31,7 +36,9 @@ async function request(endpoint, options = {}) {
   let responseData = null;
 
   const contentType =
-    response.headers.get("content-type");
+    response.headers.get(
+      "content-type",
+    );
 
   if (
     contentType?.includes(
@@ -44,8 +51,13 @@ async function request(endpoint, options = {}) {
 
   if (!response.ok) {
     if (response.status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      localStorage.removeItem(
+        "token",
+      );
+
+      localStorage.removeItem(
+        "user",
+      );
     }
 
     throw new Error(
@@ -57,35 +69,50 @@ async function request(endpoint, options = {}) {
   return responseData;
 }
 
-function get(endpoint) {
+function get(endpoint, options = {}) {
   return request(endpoint, {
     method: "GET",
+    ...options,
   });
 }
 
-function post(endpoint, data) {
+function post(
+  endpoint,
+  data,
+  options = {},
+) {
   return request(endpoint, {
     method: "POST",
     body:
       data instanceof FormData
         ? data
         : JSON.stringify(data),
+    ...options,
   });
 }
 
-function put(endpoint, data) {
+function put(
+  endpoint,
+  data,
+  options = {},
+) {
   return request(endpoint, {
     method: "PUT",
     body:
       data instanceof FormData
         ? data
         : JSON.stringify(data),
+    ...options,
   });
 }
 
-function remove(endpoint) {
+function remove(
+  endpoint,
+  options = {},
+) {
   return request(endpoint, {
     method: "DELETE",
+    ...options,
   });
 }
 
